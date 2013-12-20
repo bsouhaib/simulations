@@ -13,13 +13,13 @@ prefix=multistep
 simfile="$jobfolder/simfile.job"
 cat /dev/null > $simfile
 
-#DGP=STAR
+DGP=STAR
 #DGP=MARCELO
-DGP=SUNSPOT
+#DGP=SUNSPOT
 
 nbsubjobs=0
 
-for sdBase in 1 #0.1 #1 #0.1  
+for sdBase in 0.1 #1 #0.1  
 do
 	for ntrain in 50 100 400 #50 100 400 #50 100 400 #50 100 #200 400 #50 100 #200 400 
 	do
@@ -50,7 +50,7 @@ echo "#!/bin/bash -l" > $file
 
 echo "#PBS -t 1-$nbsubjobs" >> $file
 echo "#PBS -l file=10gb" >> $file
-echo "#PBS -l mem=9gb" >> $file
+echo "#PBS -l mem=10gb" >> $file
 echo "#PBS -l nodes=1:ppn=1" >> $file
 echo "#PBS -l walltime=50:00:00" >> $file
 echo "cd $localfolder" >> $file 

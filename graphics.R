@@ -25,9 +25,13 @@ color.strategies <- c("red", "cyan", "cyan",
 				"black", "green", "purple",
 				"black", "green", "purple")
 
+strategies <- c("REC-KNN","DIR-KNN", "RFY-KNN" ,"AVG-KNN")
+
+
 color.strategies <- rainbow(length(strategies))
 
-all.lengths <- c(50, 100, 400)
+#all.lengths <- c(50, 100, 400)
+all.lengths <- c(50, 100)
 
 
 n.lengths <- length(all.lengths)
@@ -36,13 +40,19 @@ my.heigh <- 29.7*(n.lengths/5)*0.8
 my.width <- 21*0.8;
 
 wd.folder <- "/projects/mlg/sbentaie/strategies/WORKINGDATA/"
-results.folder <- "/projects/mlg/sbentaie/strategies/RESDATA/"
+
+############# !!!!!!!!!!!!!!!!!!!!!!!!!!
+### changer aussi le prefix.results !!!!!!
+#results.folder <- "/projects/mlg/sbentaie/strategies/RESDATA/"
+results.folder <- "/projects/mlg/sbentaie/strategies/RESDATA/oldmultistep/"
+
+
 graph.folder <- "./graphics/"
 
-n.runs <- 1000
+n.runs <- 100
 step <- 10
 do.stacked.boost <- T
-do.it <- T
+do.it <- F
 
 prefix.cond <- "conditionalmean"
 
@@ -50,7 +60,10 @@ prefix.cond <- "conditionalmean"
 if(TRUE){
 	
 	prefix.results <- "multistep"
-	prefix.merge <- "testing"
+	
+#prefix.merge <- "testing"
+	prefix.merge <- "testingavg"
+
 	source("graphics-MakeResults.R")
 
 	index.horizons <- seq(H);
@@ -62,6 +75,18 @@ if(TRUE){
 #}
 	
 	index.horizons <- seq(10)
+	
+######## REMOVE ##########
+	id.nonstacked <- getid(c("REC-KNN","DIR-KNN","AVG-KNN", "RFY-KNN"))
+	prefix.pdf <- "test-nonstacked"
+	source("graphics-DecompPlot.R")
+	
+	id.stacked <- getid(c("REC-KNN","DIR-KNN","AVG-KNN", "RFY-KNN"))
+	prefix.pdf <- "test-stacked"
+	source("graphics-StackedPlot.R")
+	stop("done")
+	
+######## REMOVE ##########
 	
 	id.nonstacked <- getid(c("REC-KNN","DIR-KNN","RTI-KNN", "RJT-KNN", "RJT4-KNN"))
 	prefix.pdf <- "KNN-A"

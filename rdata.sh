@@ -1,10 +1,10 @@
 #!/bin/bash
 
-DGP=SUNSPOT
-sdBase=1
+#DGP=SUNSPOT
+#sdBase=1
 
-#DGP=STAR
-#sdBase=0.1
+DGP=STAR
+sdBase=0.1
 
 #DGP=NLAR3
 #sdBase=1

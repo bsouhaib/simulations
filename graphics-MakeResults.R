@@ -50,11 +50,13 @@ for(T in all.lengths){
 		for(i in seq_along(strategies)){
 			
 			istrategy <- strategies[i]
+			has.twocomp <- grepl("RFY",istrategy) | grepl("AVG",istrategy)
+			
 			print(istrategy)
 			
 			barm <- mvar <- mse <- big.barm <- big.ytest <- 0
 
-			if(grepl("RFY",istrategy)){
+			if(has.twocomp){
 				n.comp <- 2
 				id.comp <- c(2, 3)
 								
@@ -76,20 +78,50 @@ for(T in all.lengths){
 					
 					file.name <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", istrategy, ".Rdata", sep="")
 
-					if(file.exists(file.name))
+					################## For AVG ##################
+					strat <- unlist(strsplit(istrategy,"-"))[1] 
+					learner <- unlist(strsplit(istrategy,"-"))[2]
+					is.avg <- (strat == "AVG")
+					rec.strat <- paste("REC-",learner,sep="")
+					dir.strat <- paste("DIR-",learner,sep="")
+					
+					rec.file <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", rec.strat, ".Rdata", sep="")
+					dir.file <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", dir.strat, ".Rdata", sep="")
+
+					case1 <- (!is.avg && file.exists(file.name)) 
+					case2 <- (is.avg && file.exists(rec.file) && file.exists(dir.file))
+					#############################################
+					
+					if(case1 || case2)
 					{
-						load(file.name)
+						if(case1){
+							load(file.name)
+
+						}else if(case2){
+							load(rec.file)
+							rec.results <- results
+							load(dir.file)
+							dir.results <- results
+							
+							results <- list(forecasts = NULL, comp1 = NULL, comp2 = NULL)
+							results[[2]] <- rec.results[[1]]/2
+							results[[3]] <- dir.results[[1]]/2
+							results[[1]] <- results[[2]] + results[[3]]
+						}
+						
+#if(istrategy =="AVG-KNN")
 						
 						RES <- results[[1]]
 						
-						if(grepl("RFY", istrategy))
+						
+						if(has.twocomp)
 						{
 							RFYRES <- results[c(1,id.comp)]
 						}
 						
 						if(pass==1)
 						{
-							if(grepl("RFY",istrategy))
+							if(has.twocomp)
 							{
 								all.barm <- lapply(RFYRES, apply, c(1,2), sum)
 								list.barm <- if(is.null(list.barm)) all.barm else mapply("+", list.barm, all.barm, SIMPLIFY = FALSE)
@@ -109,7 +141,7 @@ for(T in all.lengths){
 						}else if(pass==2)
 						{
 							
-							if(grepl("RFY",istrategy))
+							if(has.twocomp)
 							{
 								myf <- function(RES,barm){  
 									Reduce("+",lapply(seq(step),
@@ -135,7 +167,7 @@ for(T in all.lengths){
 				{
 					barm <- barm/(n.files*step)
 					
-					if(grepl("RFY",istrategy))
+					if(has.twocomp)
 					{
 						list.barm <- lapply(list.barm ,"/", (n.files*step))
 						list.cov  <- lapply(list.cov,  "/", (n.files*step))
@@ -146,7 +178,7 @@ for(T in all.lengths){
 			print(paste("n.files = ",n.files,sep=""))
 			
 			
-			if(grepl("RFY",istrategy))
+			if(has.twocomp)
 			{
 				list.mvar <- lapply(list.mvar,"/", (n.files*step*Nbtest) )
 				
@@ -165,7 +197,7 @@ for(T in all.lengths){
 			VARIANCE[, i]  <- mvar
 			MSE[, i]  <- mse
 			
-			if(grepl("RFY", istrategy))
+			if(has.twocomp)
 			{
 				VARDECOMP[, i, 1]<- list.mvar$comp1
 				VARDECOMP[, i, 2]<- list.mvar$comp2

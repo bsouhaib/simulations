@@ -34,7 +34,7 @@ for(T in all.lengths)
 			makeSuperposed(datatable,maxy=1.1*ifelse(id.length<=2,veclimity[1],veclimity[3]),colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),xlab="Horizon",ylab="Error")
 			
 			
-			if(grepl("RFY",istrategy))
+			if(grepl("RFY",istrategy) || grepl("AVG",istrategy))
 			{
 				datatable<-data.frame(cbind(seq(H),VARDECOMP[,i,1:2]))
 				allcolors<-c("yellow","orange")
@@ -43,7 +43,7 @@ for(T in all.lengths)
 			}
 			
 			lines(VARIANCE[,i],col="red")
-			lines(VARIANCE[,i]+BIAS[,i],col="red")
+			lines(VARIANCE[,i]+BIAS[,i],col="black")
 			
 		}else{
 			
