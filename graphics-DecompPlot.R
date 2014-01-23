@@ -1,4 +1,4 @@
-library(monash)
+#library(monash)
 ###########################################
 #DECOMPOSITION PLOT
 ###########################################
@@ -14,11 +14,17 @@ for(id in seq_along(set.nonstacked))
 id.mean <- which(strategies == "MEAN")
 color.mean <- color.strategies[id.mean]
 
-########## REMOVE ##########
-if(any(set.nonstacked == "RFY-BST2"))
-{
-        my.id <- which(set.nonstacked == "RFY-BST2")
-        set.nonstacked[my.id] <- "BOOST"
+if(different.colors)
+color.nonstacked <- rainbow(length(set.nonstacked))
+
+########## REPLACE LONG NAMES ##########
+oldnames <- c("RFY-BST2", "AVG-LIN-KNN", "AVG-KNN-KNN")
+newnames <- c("BOOST", "AVG-L-K", "AVG-K-K")
+for(iname in seq_along(oldnames)){
+	if(any(set.nonstacked == oldnames[iname])){
+		my.id <- which(set.nonstacked == oldnames[iname])
+		set.nonstacked[my.id] <- newnames[iname]
+	}
 }
 ###########################
 
@@ -27,7 +33,10 @@ my.index <- seq(2,length(index.horizons),by=2)
 
 pos.legend <- "bottomright";  my.lwd <- 1;
 
-savepdf(paste(graph.folder, prefix.results,"-",prefix.merge,"-",DGP,"-",sdBase*100,"-non-stacked","-",prefix.pdf,sep=""), heigh = my.heigh, width = my.width)
+#savepdf(paste(graph.folder, prefix.results,"-",prefix.merge,"-",DGP,"-",sdBase*100,"-non-stacked","-",prefix.pdf,sep=""), heigh = my.heigh, width = my.width)
+#pdf(paste(graph.folder, prefix.results,"-",prefix.merge,"-",DGP,"-",sdBase*100,"-non-stacked","-",prefix.pdf,".pdf",sep=""), heigh = my.heigh, width = my.width)
+
+savepdf( paste(graph.folder, prefix.results,"-",prefix.merge,"-",DGP,"-",sdBase*100,"-non-stacked","-",prefix.pdf,sep="") )
 par(mfrow = c(n.lengths,4))
 
 limit.bias <- limit.variance <- limitmse <- limit.bv <- numeric(length(all.lengths))
@@ -36,6 +45,10 @@ for(T in all.lengths)
 {
 	file.required <- paste(wd.folder, prefix.merge,"-",DGP,"-",sdBase,"-",T,".Rdata",sep="")
 	load(file.required);
+	
+	### CUTTING #######
+	MSE <- head(MSE,max(index.horizons)); BIAS <- head(BIAS,max(index.horizons)); 
+	VARIANCE <- head(VARIANCE,max(index.horizons)); VARNOISE <- head(VARNOISE,max(index.horizons))
 		
 	bias <- BIAS[,id.nonstacked]
 	variance <- VARIANCE[,id.nonstacked]
@@ -52,7 +65,7 @@ for(T in all.lengths)
 	
 	
 	# PLOT MSE
-	ts.plot(mse[index.horizons,,drop=F],col=c(color.nonstacked,color.mean),xlab="Horizon",ylab="Mean Squared Error (MSE)",main=paste("T = ",T,message,sep=""),lwd=my.lwd, gpars = my.gpars)	
+	ts.plot(mse[index.horizons,,drop=F],col=c(color.nonstacked,color.mean),xlab="Horizon",ylab="MSE",main=paste("T = ",T,message,sep=""),lwd=my.lwd, gpars = my.gpars)	
 	axis(1,at=my.index,labels=index.horizons[my.index])
 		
 	if(T == head(all.lengths,1))
@@ -81,6 +94,7 @@ for(T in all.lengths)
 	axis(1,at=my.index,labels=index.horizons[my.index])
 
 }
-dev.off();	
-	
+
+#dev.off();	
+endpdf();	
 

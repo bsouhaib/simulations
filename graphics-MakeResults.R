@@ -79,15 +79,18 @@ for(T in all.lengths){
 					file.name <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", istrategy, ".Rdata", sep="")
 
 					################## For AVG ##################
-					strat <- unlist(strsplit(istrategy,"-"))[1] 
-					learner <- unlist(strsplit(istrategy,"-"))[2]
+					mysplit <- unlist(strsplit(istrategy,"-"))
+					strat <- mysplit[1] 
+					learner <- learner1 <- mysplit[2]
 					is.avg <- (strat == "AVG")
-					rec.strat <- paste("REC-",learner,sep="")
-					dir.strat <- paste("DIR-",learner,sep="")
-					
-					rec.file <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", rec.strat, ".Rdata", sep="")
-					dir.file <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", dir.strat, ".Rdata", sep="")
-
+					if(is.avg){
+						learner2 <- mysplit[3]
+						rec.strat <- paste("REC-",learner1,sep="")
+						dir.strat <- paste("DIR-",learner2,sep="")
+						
+						rec.file <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", rec.strat, ".Rdata", sep="")
+						dir.file <- paste(results.folder, prefix.results, "-", DGP, "-", sdBase, "-", T, "-", start.run, "-", end.run,"-", dir.strat, ".Rdata", sep="")
+					}
 					case1 <- (!is.avg && file.exists(file.name)) 
 					case2 <- (is.avg && file.exists(rec.file) && file.exists(dir.file))
 					#############################################

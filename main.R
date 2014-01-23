@@ -1,6 +1,6 @@
 rm(list=ls())
-source("/u/sbentaie/multistep/strategies.R")
-source("/u/sbentaie/DATA/SIMULATIONS/simts.R")
+source(paste(Sys.getenv("HOME"),"/multistep/strategies.R",sep=""))
+source(paste(Sys.getenv("HOME"),"/DATA/SIMULATIONS/simts.R",sep=""))
 
 
 args=(commandArgs(TRUE))
@@ -9,10 +9,11 @@ if(length(args)==0){
 #DGP<-"SUNSPOT" ; sdBase<-1; ntrain<-50; runstart<-1; runend<-5;
 #DGP<-"STAR" ; sdBase<-0.05; ntrain<-50; runstart<-1; runend<-5;
 	
-	folder<-"/u/sbentaie/simulations/temp/debug-"
-	DGP <- "STAR" ; sdBase <- 0.1; ntrain <- 50; runstart <- 1; runend <- 2;
+	#folder<- "/u/sbentaie/simulations/temp/debug-"
+	folder <- paste(Sys.getenv("HOME"),"/simulations/temp/debug-",sep="")
+	DGP <- "STAR" ; sdBase <- 0.1; ntrain <- 50; runstart <- 1; runend <- 1;
 	
-	DGP <- "MARCELO" ; sdBase <- 1; ntrain <- 50; runstart <- 81; runend <- 90;
+	#DGP <- "MARCELO" ; sdBase <- 1; ntrain <- 50; runstart <- 81; runend <- 90;
 
 	
 }else{
@@ -23,14 +24,27 @@ if(length(args)==0){
 
 set.runs <- seq(runstart,runend)
 
-strategies <- c("MEAN", "REC-LIN", "DIR-LIN",
-"REC-KNN", "RTI-KNN", "RJT-KNN", "RJT4-KNN",
-"DIR-KNN", "JNT-KNN", "JNT4-KNN", "RFY-KNN", 
-"REC-MLP", "DIR-MLP", "JNT-MLP", "JNT4-MLP", "RFY-MLP",
-"REC-BST1", "DIR-BST1", "RFY-BST1",
-"REC-BST2", "DIR-BST2", "RFY-BST2")
+#strategies <- c("MEAN", "REC-LIN", "DIR-LIN",
+#"REC-KNN", "RTI-KNN", "RJT-KNN", "RJT4-KNN",
+#"DIR-KNN", "JNT-KNN", "JNT4-KNN", "RFY-KNN", 
+#"REC-MLP", "DIR-MLP", "JNT-MLP", "JNT4-MLP", "RFY-MLP")
+#strategies <- c("REC-BST1", "DIR-BST1", "RFY-BST1",
+#"REC-BST2", "DIR-BST2", "RFY-BST2")
 
-strategies <- "REC-LIN"
+#strategies <- c("MEAN", "REC-LIN", "DIR-LIN",
+#"REC-KNN",
+#"DIR-KNN", "RFY-KNN",
+#"REC-MLP", "DIR-MLP",
+#"RFY-BST2")
+
+#strategies <- c("MEAN", "REC-LIN", "REC-MLP", "DIR-MLP", "RFY-BST2")
+#strategies <- c("REC-LIN","RFY-BST2")
+#strategies <- c("MEAN","REC-LIN","REC-KNN")
+
+strategies <- c("MEAN", "REC-LIN", "DIR-LIN", 
+"REC-KNN",
+"DIR-KNN", "RFY-KNN")
+
 
 print(strategies)
 print(DGP)
@@ -81,12 +95,16 @@ for(i in seq_along(strategies)){
 
 for(id.run in seq_along(set.runs))
 {
+	print(id.run)
+	print(date())
+
 	RUN <- set.runs[id.run]
 	set.seed(RUN)
 	
 	trainset <- simts(sizeTimeSeries=ntrain,DGP=DGP,mycoef=mycoef,sdBase=sdBase)$series
 	
-	source("/u/sbentaie/multistep/shared-main.R")
+	source(paste(Sys.getenv("HOME"),"/multistep/shared-main.R",sep=""))
+
 }
 
 print(" Writing files ...")

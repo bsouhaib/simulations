@@ -1,7 +1,11 @@
-makeSuperposed<-function(datatable,maxy,colorvar,maintitle=NULL,xlab,ylab,do.plot=TRUE)
+makeSuperposed<-function(datatable,maxy,colorvar,maintitle=NULL,xlab,ylab,do.plot=TRUE, densities = NULL)
 {
 	if(length(colorvar)!=ncol(datatable)-1)
     stop("Error color !")
+	
+	if(!is.null(densities) && length(densities) != ncol(datatable)-1 ){
+		stop("Error densities ! ")
+	}
 	
 #ylim<-c(0,1.1*max(maxy,apply(datatable[,-1],1,sum)))
 	ylim<-c(0,maxy)
@@ -14,9 +18,19 @@ makeSuperposed<-function(datatable,maxy,colorvar,maintitle=NULL,xlab,ylab,do.plo
 	a<-datatable[,2]
 	yysrc2 <- c(rep(0, nrow(datatable)), rev(a))
 	
-	for(variable in seq(2,ncol(datatable)))
+	allvar <- seq(2,ncol(datatable))
+	for(variable in allvar)
 	{
-		polygon(xx, yysrc2, col=colorvar[variable-1],border=NA)
+		id <- which(variable==allvar)
+		
+		mydensity <- NULL
+		if(!is.null(densities)){
+			mydensity <- densities[id]
+			if(is.na(mydensity))
+			mydensity <- NULL
+		}
+		
+		polygon(xx, yysrc2, col=colorvar[variable-1],border=NA, density = mydensity)
 		if(variable != ncol(datatable))
 		{
 			b<-rev(apply(datatable[,2:(variable+1),drop=F],1,sum))
