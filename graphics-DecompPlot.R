@@ -18,6 +18,8 @@ if(different.colors)
 color.nonstacked <- rainbow(length(set.nonstacked))
 
 ########## REPLACE LONG NAMES ##########
+if(FALSE){
+
 oldnames <- c("RFY-BST2", "AVG-LIN-KNN", "AVG-KNN-KNN")
 newnames <- c("BOOST", "AVG-L-K", "AVG-K-K")
 for(iname in seq_along(oldnames)){
@@ -26,12 +28,14 @@ for(iname in seq_along(oldnames)){
 		set.nonstacked[my.id] <- newnames[iname]
 	}
 }
+
+}
 ###########################
 
 my.gpars <- list(xaxt="n")
 my.index <- seq(2,length(index.horizons),by=2)
 
-pos.legend <- "bottomright";  my.lwd <- 1;
+pos.legend <- "bottomright";  my.lwd <- 0.5;
 
 #savepdf(paste(graph.folder, prefix.results,"-",prefix.merge,"-",DGP,"-",sdBase*100,"-non-stacked","-",prefix.pdf,sep=""), heigh = my.heigh, width = my.width)
 #pdf(paste(graph.folder, prefix.results,"-",prefix.merge,"-",DGP,"-",sdBase*100,"-non-stacked","-",prefix.pdf,".pdf",sep=""), heigh = my.heigh, width = my.width)
@@ -65,11 +69,13 @@ for(T in all.lengths)
 	
 	
 	# PLOT MSE
-	ts.plot(mse[index.horizons,,drop=F],col=c(color.nonstacked,color.mean),xlab="Horizon",ylab="MSE",main=paste("T = ",T,message,sep=""),lwd=my.lwd, gpars = my.gpars)	
+	ts.plot(mse[index.horizons,,drop=F],col=c(color.nonstacked,color.mean),xlab="Horizon",ylab="MSE",main=paste("T = ",T,message,sep=""),lwd=my.lwd, gpars = my.gpars, ylim = c(0, limitmse[1]))	
+	lines(noise, col="grey", lwd = 0.2)
+
 	axis(1,at=my.index,labels=index.horizons[my.index])
 		
 	if(T == head(all.lengths,1))
-	legend(pos.legend, legend=set.nonstacked,col=color.nonstacked,lwd=2)
+	legend(pos.legend, legend=set.nonstacked,col=color.nonstacked,lwd=2, cex=0.5, pt.cex = 1)
 	
 	# PLOT BIAS^2
 	if(any(set.nonstacked=="MEAN"))
@@ -80,17 +86,25 @@ for(T in all.lengths)
 		lines(BIAS[index.horizons,id.mean,drop=F],col=color.mean,lwd=my.lwd)
 	}else{
 		
-		ts.plot(bias[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab=expression(paste(Bias^2)),main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars)
+		ts.plot(bias[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab=expression(paste(Bias^2)),main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars, 
+		ylim = c(0, ifelse(T>100, limit.bias[id.length], limit.bias[id.length]))   )
+		
 		axis(1,at=my.index,labels=index.horizons[my.index])
 	}
 	
 	# PLOT VARIANCE
-	ts.plot(variance[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab="Variance",main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars)
+	ts.plot(variance[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab="Variance",main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars,
+	ylim = c(0, ifelse(T>100, limit.variance[id.length], limit.variance[id.length])) )
+	
 	axis(1,at=my.index,labels=index.horizons[my.index])
 
 	# PLOT BIAS^2 + VARIANCE
 	bv <- bias+variance
-	ts.plot(bv[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab=expression(paste(Bias^2+Variance)),main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars)
+	#ts.plot(bv[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab=expression(paste(Bias^2+Variance)),main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars)
+
+	ts.plot(bv[index.horizons,,drop=F],col=color.nonstacked,xlab="Horizon",ylab=expression(paste(Bias^2+Variance)),main=paste("T = ",T,sep=""),lwd=my.lwd, gpars = my.gpars,
+	ylim = c(0, ifelse(T>100, limit.bv[id.length], limit.bv[id.length])) )
+	
 	axis(1,at=my.index,labels=index.horizons[my.index])
 
 }

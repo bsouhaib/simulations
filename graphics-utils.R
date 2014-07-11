@@ -51,7 +51,20 @@ getid <- function(my.strategies)
 	res
 }
 
-
+make.graphics <- function(strategies, name, stacked = FALSE)
+{
+	if(stacked)
+	{
+		id.stacked <<- getid(strategies)
+		prefix.pdf <<- name
+		source("graphics-StackedPlot.R")
+		
+	}else{
+		id.nonstacked <<- getid(strategies)
+		prefix.pdf <<- name
+		source("graphics-DecompPlot.R")
+	}
+}
 
 #methods<-c("MEAN",
 #		   

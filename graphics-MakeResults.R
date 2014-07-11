@@ -33,7 +33,8 @@ vec <- vector("list", n.lengths)
 all.decomposition <-list(bias=vec, variance = vec, vardecomp = vec, covariance = vec, noise = vec, mse = vec)
 
 for(T in all.lengths){
-	
+
+	print("----------------------")	
 	print(paste("T = ", T, sep=""))
 	
 	file.required <- paste(wd.folder, prefix.merge, "-", DGP , "-", sdBase,"-", T ,".Rdata",sep="")

@@ -49,7 +49,8 @@ for(T in all.lengths)
 				datatable<-data.frame(cbind(index.horizons,VARDECOMP[index.horizons,i,1:2]))
 				allcolors<-c("grey","orange")
 				
-				makeSuperposed(datatable,maxy=1.1*ifelse(id.length<=2,veclimity[1],veclimity[3]),colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),xlab="Horizon",ylab="Error")
+				#makeSuperposed(datatable,maxy=1.1*ifelse(id.length<=2,veclimity[1],veclimity[1]),colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),xlab="Horizon",ylab="Error")
+				makeSuperposed(datatable,maxy=1.1 * veclimity[id.length], colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),xlab="Horizon",ylab="Error")
 				my.doplot <- FALSE
 				my.densities <- c(40,40)
 			}
@@ -62,7 +63,7 @@ allcolors <- c("yellow","cyan")
 
 			
 			makeSuperposed(datatable,
-						   maxy=1.1*ifelse(id.length<=2,veclimity[1],veclimity[3]),
+						   maxy=1.1 * veclimity[id.length],
 						   colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),
 						   xlab="Horizon",ylab="Error", 
 						   do.plot=my.doplot,
@@ -76,14 +77,20 @@ allcolors <- c("yellow","cyan")
 			
 		}else{
 			
-			datatable <- data.frame(cbind(index.horizons,VARNOISE[index.horizons],BIAS[index.horizons,i],VARIANCE[index.horizons,i])); allcolors <- c("lightcyan","grey","yellow")
-			makeSuperposed(datatable,maxy=1.1*limity,colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),xlab="Horizon",ylab="Error")
+			datatable <- data.frame(cbind(index.horizons,VARNOISE[index.horizons],BIAS[index.horizons,i],VARIANCE[index.horizons,i])); 
+			
+			#allcolors <- c("lightcyan","grey","yellow")
+			allcolors <- c("lightcyan","cyan","yellow")
+
+			makeSuperposed(datatable,maxy = 1.1*ifelse(id.length<=2,veclimity[1],veclimity[1])  ,colorvar=allcolors,maintitle=paste("T = ",T," - ",istrategy,sep=""),xlab="Horizon",ylab="Error")
 			
 			lines(MSE[index.horizons,id.mean],col="black",lwd=.3)
 			
 		}
 	}		
 }
+
+#mtext("My 'Title' in a strange place", side = 3, line = -2, outer = TRUE)
 
 #dev.off()	
 endpdf();
